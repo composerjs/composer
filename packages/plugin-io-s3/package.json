@@ -1,0 +1,17 @@
+{
+  "name": "@composerjs/plugin-io-s3",
+  "version": "0.10.0",
+  "author": "Justin Beaudry <beaudry.justin@gmail.com>",
+  "license": "MIT",
+  "main": "s3.ts",
+  "dependencies": {
+    "@composerjs/core": "0.x.x",
+    "@types/bluebird": "3.x.x",
+    "bluebird": "3.x.x",
+    "@types/aws-sdk": "2.x.x",
+    "aws-sdk": "2.x.x"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

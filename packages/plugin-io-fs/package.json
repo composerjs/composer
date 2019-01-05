@@ -1,0 +1,17 @@
+{
+  "name": "@composerjs/plugin-io-fs",
+  "version": "0.10.0",
+  "author": "Justin Beaudry <beaudry.justin@gmail.com>",
+  "license": "MIT",
+  "main": "fs.ts",
+  "dependencies": {
+    "@composerjs/core": "0.x.x",
+    "@types/bluebird": "3.x.x",
+    "bluebird": "3.x.x",
+    "@types/fs-extra": "5.x.x",
+    "fs-extra": "7.x.x"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

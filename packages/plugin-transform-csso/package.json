@@ -1,0 +1,15 @@
+{
+  "name": "@composerjs/plugin-transform-csso",
+  "version": "0.10.0",
+  "author": "Justin Beaudry <beaudry.justin@gmail.com>",
+  "license": "MIT",
+  "main": "csso.ts",
+  "dependencies": {
+    "@composerjs/core": "0.x.x",
+    "@types/bluebird": "3.x.x",
+    "bluebird": "3.x.x"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

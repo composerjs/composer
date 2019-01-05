@@ -1,0 +1,22 @@
+{
+  "name": "@composerjs/composer",
+  "version": "0.10.0",
+  "author": "Justin Beaudry <beaudry.justin@gmail.com>",
+  "license": "MIT",
+  "main": "composer.ts",
+  "engines": {
+    "node": "10.x.x"
+  },
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "dependencies": {
+    "@composerjs/core": "0.x.x",
+    "@types/bluebird": "3.x.x",
+    "bluebird": "3.x.x"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "name": "@composerjs/plugin-io-http",
+  "version": "0.10.0",
+  "author": "Justin Beaudry <beaudry.justin@gmail.com>",
+  "license": "MIT",
+  "main": "http.ts",
+  "dependencies": {
+    "@composerjs/core": "0.x.x",
+    "@types/bluebird": "3.x.x",
+    "bluebird": "3.x.x",
+    "@types/request-promise": "4.x.x",
+    "request-promise": "4.x.x",
+    "request": "2.x.x"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@composerjs/core",
+  "version": "0.10.0",
+  "author": "Justin Beaudry <beaudry.justin@gmail.com>",
+  "license": "MIT",
+  "main": "index.ts",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@types/bluebird": "3.x.x",
+    "bluebird": "3.x.x",
+    "@types/pino": "5.x.x",
+    "pino-pretty": "2.x.x",
+    "pino": "5.x.x",
+    "@types/lodash": "4.x.x",
+    "lodash": "4.x.x"
+  }
+}

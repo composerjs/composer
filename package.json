@@ -1,0 +1,14 @@
+{
+  "name": "composer",
+  "author": "Justin Beaudry <beaudry.justin@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "bootstrap": "npx lerna bootstrap --hoist={bluebird,@types/bluebird}",
+    "clean": "npx lerna clean --yes && rm -rf node_modules && npm i --no-package-lock",
+    "refresh": "npm run clean && npm run bootstrap"
+  },
+  "devDependencies": {
+    "lerna": "3.x.x"
+  }
+}
