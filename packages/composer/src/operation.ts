@@ -11,15 +11,32 @@ import {
   OperationType,
   ImplementsStaticFactory
 } from '@composerjs/core';
-import {
-  IOperationFactoryParams,
-  IOperation,
-  IOperationResult
-} from './types';
 
 Bluebird.config({
   cancellation: true
 });
+
+export interface IOperation {
+  op?: Bluebird<IOperationResult>;
+  start: number;
+  delta: number;
+  log: ComposerLogger;
+  config: IPluginConfig;
+  type: OperationType;
+  execute(input?: IResult): Bluebird<IOperationResult>;
+  halt(): void;
+}
+
+export interface IOperationResult {
+  result: IResult,
+  delta: number
+}
+
+export interface IOperationFactoryParams {
+  type: OperationType,
+  config: IPluginConfig,
+  log?: ComposerLogger
+}
 
 @ImplementsStaticFactory<OperationResult, IOperationResult>()
 class OperationResult implements IOperationResult {
