@@ -1,7 +1,7 @@
 [[alt=composer|https://github.com/composerjs/composer/blob/master/logo.png]]
-Composer
-========
+Composer Core
+=============
 
-Composer build and deployment runtime
+Composer core source, and library
 
 SEE:  https://github.com/composerjs/composer/tree/master/packages/cli

@@ -12,5 +12,11 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "composer": {
+    "exports": {
+      "read": "http-read.ts",
+      "write": "http-write.ts"
+    }
   }
 }

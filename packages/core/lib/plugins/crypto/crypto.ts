@@ -18,6 +18,13 @@ interface CryptoTransformOptions {
   inputEncoding: 'utf8' | 'ascii' | 'latin1';
 }
 
+let CryptoTransformOptions: CryptoTransformOptions;
+CryptoTransformOptions = {
+  algorithm: 'sha256',
+  encoding: 'hex',
+  inputEncoding: 'utf8'
+};
+
 // noinspection JSUnusedGlobalSymbols
 @ImplementsPluginStaticFactory<CryptoTransformPlugin>()
 export default class CryptoTransformPlugin extends CoreTransformPlugin implements TransformPlugin {
@@ -26,18 +33,15 @@ export default class CryptoTransformPlugin extends CoreTransformPlugin implement
     PluginRegistry.registerTransformPlugin(`${name}/lib/plugins/crypto`, this);
   }
   async transform(
-    input: IResult,
-    {
-      algorithm='sha256',
-      encoding='hex',
-      inputEncoding='utf8'
-    }: CryptoTransformOptions): Bluebird<IResult> {
+    input: IResult, {algorithm, encoding, inputEncoding} = CryptoTransformOptions): Bluebird<IResult> {
     this.logStart();
-    let result = crypto.createHash(algorithm).update(input.content, inputEncoding);
+    let content = crypto.createHash(algorithm)
+        .update(input.content, inputEncoding)
+        .digest(encoding);
     this.logComplete();
     return ResultFactory({
       tag: `crypto-${algorithm}-${encoding}`,
-      content: result.digest(encoding)
+      content
     });
   }
   static Factory({log}: PluginConstructorParams): CryptoTransformPlugin {

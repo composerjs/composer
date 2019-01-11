@@ -1,5 +1,5 @@
 import Bluebird from 'bluebird';
-import path from 'path';
+import path, { ParsedPath } from 'path';
 import {
   ComposerLogger,
   Config,
@@ -18,16 +18,30 @@ export default class OutputExpansionPlugin extends CorePipelinePlugin implements
     super('OutputExpansionPlugin', log);
     PluginRegistry.registerPipelinePlugin(`${name}/lib/plugins/output-expansion`, this);
   }
+  private static ParsePathExpression(inPath: ParsedPath, outPath: ParsedPath): string {
+    if (outPath.name === '*') {
+      return `${outPath.dir}/${inPath.name}${outPath.ext}`;
+    } else {
+      return `${outPath.dir}/${outPath.name}${outPath.ext}`;
+    }
+  }
   async operate(input: Config): Bluebird<Config> {
     this.logStart();
     input.pipeline = input.pipeline.map(operation => {
       const inOptions = operation.in.options || {};
       const outOptions = operation.out.options || {};
-      const parsed = path.parse(inOptions.path || inOptions.uri);
+      const inParsed = path.parse(inOptions.path || inOptions.uri);
+      const outParsed = path.parse(outOptions.path || outOptions.uri);
       if (outOptions.path) {
-        outOptions.path = `${outOptions.path}${parsed.name}${parsed.ext}`;
+        outOptions.path = OutputExpansionPlugin.ParsePathExpression(
+          inParsed,
+          outParsed
+        );
       } else if (outOptions.uri) {
-        outOptions.uri = `${outOptions.uri}${parsed.name}${parsed.ext}`;
+        outOptions.uri = OutputExpansionPlugin.ParsePathExpression(
+          inParsed,
+          outParsed
+        );
       }
       return operation;
     });

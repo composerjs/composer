@@ -26,6 +26,8 @@ export class Composer {
     this.config = config;
     this.log = loggerFactory({
       name: 'Composer',
+      // For now log everything. This will default to error (or silence) for most clients
+      // the cli will handle setting the log level
       level: 'trace',
       serializers: {
         config: function({global, pipeline}) {
@@ -33,19 +35,8 @@ export class Composer {
             global,
             pipeline
           };
-        },
-        plugins: function(plugins) {
-          return {
-            plugins
-          };
-        },
-        paths: function(paths) {
-          return {
-            paths
-          };
         }
-      },
-      prettyPrint: true
+      }
     });
     this.log.trace('initializing composer');
   }

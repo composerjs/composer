@@ -28,7 +28,7 @@ export const config = {
       out: {
         plugin: 'core/fs/write',
         options: {
-          path: './out'
+          path: './out/*.json'
         }
       }
     }

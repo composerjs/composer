@@ -31,7 +31,6 @@ export class Pipeline {
     this.log.trace('initializing pipeline');
   }
   private async input(config: PluginConfig): Bluebird<IResult> {
-    this.log.trace('starting input operation');
     const {log} = this;
     const operationResult = await ReadOperation.Factory({
       config,
@@ -42,7 +41,6 @@ export class Pipeline {
     return operationResult.result;
   }
   private async transform(input: IResult, operations: PluginConfig[] = []): Bluebird<IResult> {
-    this.log.trace('starting transform operation');
     let aggregateDelta: number = 0;
     const {log} = this;
     const result: IResult = await Bluebird.reduce(operations, async (
@@ -61,7 +59,6 @@ export class Pipeline {
     return result;
   }
   private async output(input: IResult, config: PluginConfig): Bluebird<void> {
-    this.log.trace('starting output operation');
     const {log} = this;
     const operationResult = await WriteOperation.Factory({
       config,
@@ -71,9 +68,6 @@ export class Pipeline {
     this.totalTime += operationResult.delta;
   }
   private async pipeline(input: Config): Bluebird<Config> {
-    this.log.debug({
-      config: input
-    }, 'starting pipeline plugin operation');
     if (!input.global || !input.global.pipelinePlugins) {
       return input;
     }
@@ -101,22 +95,42 @@ export class Pipeline {
     const pipelinePluginPlugins = config.getUniquePipelinePluginPaths();
     await PluginLoader.LoadAll(pipelinePluginPlugins, log);
     log.trace(`initialized ${pipelinePluginPlugins.length} pipeline plugins`);
-    const mutatedConfig = await this.pipeline(config);
+    let mutatedConfig;
+    try {
+      mutatedConfig = await this.pipeline(config);
+    } catch(err) {
+      log.error({err}, 'error running pipeline plugin operations');
+      throw err;
+    }
 
     log.debug({config: mutatedConfig}, 'initializing read/write/transform plugins');
     const pipelinePlugins = mutatedConfig.getUniquePluginPaths();
     this.log.trace({paths: pipelinePlugins}, 'getting plugin paths');
-    await PluginLoader.LoadAll(pipelinePlugins, log);
+    try {
+      await PluginLoader.LoadAll(pipelinePlugins, log);
+    } catch(err) {
+      throw err;
+    }
     log.trace(`initialized ${pipelinePlugins.length} read/write/transform plugins`);
 
     await Bluebird
       .map(config.pipeline, async operation => {
-        const readResult = await this.input(operation.in);
-        const transformResult = await this.transform(readResult, operation.transform);
+        let readResult;
+        try {
+          readResult = await this.input(operation.in);
+        } catch(err) {
+          throw err;
+        }
+        let transformResult;
+        try {
+          transformResult = await this.transform(readResult, operation.transform);
+        } catch(err) {
+          throw err;
+        }
         return this.output(transformResult || readResult, operation.out);
       }, {
         concurrency: 20
-      });
+      }).catch(err => log.error({err}));
     log.trace(`pipeline operations complete in ${this.totalTime} seconds.`);
   }
   static async Factory(config: Config, log?: ComposerLogger): Bluebird<Pipeline> {

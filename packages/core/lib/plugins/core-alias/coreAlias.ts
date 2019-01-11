@@ -24,6 +24,20 @@ export default class CoreAliasPlugin extends CorePipelinePlugin implements Pipel
     super('CoreAliasPlugin', log);
     PluginRegistry.registerPipelinePlugin(`${name}/lib/plugins/core-alias`, this);
   }
+  /**
+   *
+   * @note
+   * this convention is subject to change
+   *
+   * @description
+   * As a convention core plugins use snake or spinal casing.
+   * When aliased spinal casing is converted to camel casing, and snake casing
+   *   is converted into a path-like string.
+   *
+   * @example
+   * `fs_read` is converted to `fs/read`
+   * `output-expression` is converted to `outputExpression`
+   */
   private static Replacer(plugin: string) {
     if (plugin.indexOf('_') > -1) {
       return plugin.replace('_', '/');

@@ -14,7 +14,9 @@ export class PluginLoader {
   protected constructor() {}
   private static handleInstantiationError(err: Error, pluginPath: string, log: ComposerLogger) {
     const instantiationError = PluginInstantiationError.Factory({pluginPath, err});
-    log.error(pluginPath, instantiationError);
+    log.error({
+      err: instantiationError
+    });
     throw err;
   }
   private static async Load(pluginPath: string, log: ComposerLogger): Bluebird<void> {
@@ -38,24 +40,28 @@ export class PluginLoader {
     }
     logSuccess();
     if (plugin.reader) {
+      log.trace('using plugins "reader" export');
       try {
         plugin.reader.Factory({log});
       } catch(err) {
         this.handleInstantiationError(err, pluginPath, log);
       }
     } else if (plugin.writer) {
+      log.trace('using plugins "writer" export');
       try {
         plugin.writer.Factory({log});
       } catch(err) {
         this.handleInstantiationError(err, pluginPath, log);
       }
     } else if (plugin.transform) {
+      log.trace('using plugins "transform" export');
       try {
         plugin.transform.Factory({log});
       } catch(err) {
         this.handleInstantiationError(err, pluginPath, log);
       }
     } else if (plugin.pipeline) {
+      log.trace('using plugins "pipeline" export');
       try {
         plugin.pipeline.Factory({log});
       } catch(err) {
@@ -66,6 +72,7 @@ export class PluginLoader {
       log.error({err});
       throw err;
     } else {
+      log.trace('using plugins "default" export');
       try {
         plugin.default.Factory({log});
       } catch(err) {

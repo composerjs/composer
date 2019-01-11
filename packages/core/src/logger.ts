@@ -1,4 +1,4 @@
-import logger, { Logger, SerializerFn } from 'pino';
+import pino, { Logger, SerializerFn } from 'pino';
 
 export type ComposerLogger = Logger;
 export const loggerFactory = ({
@@ -7,14 +7,12 @@ export const loggerFactory = ({
   log,
   level,
   serializers,
-  prettyPrint
 }: {
   name: string,
   type?: string,
   log?: ComposerLogger,
   level?: string,
-  serializers?: {[ key: string ]: SerializerFn},
-  prettyPrint?: boolean
+  serializers?: {[ key: string ]: SerializerFn}
 }): ComposerLogger => {
   let config = {
     name: `${name}${type ? '<' + type + '>' : ''}`,
@@ -23,8 +21,7 @@ export const loggerFactory = ({
   if (log) {
     return log.child(config);
   }
-	return logger(Object.assign(config, {
-		level,
-		prettyPrint
-	}));
+	return pino(Object.assign(config, {
+    level
+  }));
 };
