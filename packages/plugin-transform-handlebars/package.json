@@ -5,9 +5,7 @@
   "license": "MIT",
   "main": "handlebars.ts",
   "dependencies": {
-    "@composerjs/core": "0.x.x",
-    "@types/bluebird": "3.x.x",
-    "bluebird": "3.x.x"
+    "@composerjs/core": "0.x.x"
   },
   "publishConfig": {
     "access": "public"

@@ -1,0 +1,83 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "configSchema.json",
+  "title": "Config",
+  "description": "Composer configuration JSON Schema",
+  "type": "object",
+  "properties": {
+    "global": {
+      "type": "object",
+      "properties": {
+        "aliases": {
+          "type": "object",
+          "uniqueItems": true,
+          "patternProperties": {
+            ".*": {
+              "type": "string"
+            }
+          }
+        },
+        "plugins": {
+          "type": "object",
+          "uniqueItems": true,
+          "patternProperties": {
+            ".*": {
+              "type": "object"
+            }
+          }
+        },
+        "pipelinePlugins": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pipeline": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "in": {
+            "$ref": "#/definitions/plugin"
+          },
+          "transform": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/plugin"
+            },
+            "minItems": 1
+          },
+          "out": {
+            "$ref": "#/definitions/plugin"
+          }
+        },
+        "required": [
+          "in",
+          "out"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "plugin": {
+      "type": "object",
+      "properties": {
+        "plugin": {
+          "type": "string"
+        },
+        "options": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "plugin"
+      ]
+    }
+  },
+  "required": [
+    "pipeline"
+  ]
+}

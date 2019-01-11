@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 import {
-  ICacheConfig,
+  CacheConfig,
   IResult,
   ImplementsStaticFactory
 } from '@composerjs/core';
@@ -43,7 +43,7 @@ const CacheItemFactory = ({
   last_run: Math.floor(Date.now() / 1000)
 });
 
-@ImplementsStaticFactory<Cache, ICacheConfig>()
+@ImplementsStaticFactory<Cache, CacheConfig>()
 export class Cache implements ICache {
   private readonly algorithm: string;
   private readonly ttl: number;
@@ -53,7 +53,7 @@ export class Cache implements ICache {
     this.ttl = ttl;
   }
   // noinspection JSUnusedGlobalSymbols
-  static Factory({algorithm, ttl}: ICacheConfig = {}) {
+  static Factory({algorithm, ttl}: CacheConfig = {}) {
     return new Cache(algorithm, ttl);
   }
   private static Compare(previous: string, next: string): boolean {

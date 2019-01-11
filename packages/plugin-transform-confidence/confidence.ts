@@ -1,30 +1,41 @@
-import Bluebird from 'bluebird';
 import Confidence from 'confidence';
-import pkg from './package.json';
 import {
-  ITransformPlugin,
-  Transform,
-  IResult,
-  ResultFactory,
+  TransformPlugin,
+  CoreTransformPlugin,
   ComposerLogger,
   PluginRegistry,
   PluginConstructorParams,
-  ImplementsPluginStaticFactory, IPluginConfig
+  ImplementsPluginStaticFactory,
+  IResult,
+  ResultFactory,
+  Bluebird
 } from '@composerjs/core';
+import { name } from './package.json';
+
+interface ConfidencePluginOptions {
+  space?: number | string;
+  criteria?: {
+    [key: string]: string
+  };
+}
 
 // noinspection JSUnusedGlobalSymbols
 @ImplementsPluginStaticFactory<ConfidencePlugin>()
-export default class ConfidencePlugin extends Transform implements ITransformPlugin {
+export default class ConfidencePlugin extends CoreTransformPlugin implements TransformPlugin {
   protected constructor(log?: ComposerLogger) {
     super('ConfidenceJSON', log);
-    PluginRegistry.registerTransformPlugin(pkg.name, this, this.log);
+    PluginRegistry.registerTransformPlugin(name, this);
   }
   // noinspection JSUnusedGlobalSymbols
   static Factory({log}: PluginConstructorParams): ConfidencePlugin {
     return new ConfidencePlugin(log);
   }
-  async transform(input: IResult, options: IPluginConfig['options'] = {}): Bluebird<IResult> {
+  async transform(input: IResult, {space, criteria}: ConfidencePluginOptions = {}): Bluebird<IResult> {
     this.logStart();
+    this.log.trace({
+      space,
+      criteria
+    }, 'with settings');
     let parsed;
     try {
       parsed = JSON.parse(input.content);
@@ -42,16 +53,16 @@ export default class ConfidencePlugin extends Transform implements ITransformPlu
     let json;
     try {
       json = JSON.stringify(store.get('/', {
-        criteria: options.criteria
-      }), null, options.space);
+        criteria
+      }), null, space);
     } catch(err) {
       this.logError(err);
       throw err;
     }
     this.logComplete();
-    return ResultFactory({
-      tag: 'json',
-      content: json
-    });
+		return ResultFactory({
+			tag: 'confidence-json',
+			content: json
+		});
   }
 }

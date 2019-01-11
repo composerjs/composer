@@ -1,0 +1,8 @@
+[
+  "alias",
+  "fs_read",
+  "fs_write",
+  "global",
+  "crypto",
+  "output-expansion"
+]

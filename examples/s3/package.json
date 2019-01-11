@@ -1,9 +1,0 @@
-{
-  "name": "example-s3-json",
-  "dependencies": {
-    "@composerjs/composer": "0.x.x",
-    "@composerjs/plugin-io-s3": "0.x.x",
-    "@composerjs/plugin-transform-json5": "0.x.x",
-    "@composerjs/plugin-transform-confidence": "0.x.x"
-  }
-}

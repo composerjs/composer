@@ -1,71 +1,65 @@
-import Bluebird from 'bluebird';
 import {
   ComposerLogger,
-  IIOPlugin,
-  ITransformPlugin,
-  IPluginConfig,
+  Config,
+  PluginConfig,
   PluginRegistry,
-  InvalidPluginError,
   IResult,
   loggerFactory,
-  OperationType,
-  ImplementsStaticFactory
+  ImplementsStaticFactory,
+  ReadPlugin,
+  WritePlugin,
+  TransformPlugin,
+  PipelinePlugin,
+  Bluebird
 } from '@composerjs/core';
 
 Bluebird.config({
   cancellation: true
 });
 
-export interface IOperation {
-  op?: Bluebird<IOperationResult>;
+interface Operation<T> {
+  op?: Bluebird<OperationResult<T>>;
   start: number;
-  delta: number;
   log: ComposerLogger;
-  config: IPluginConfig;
-  type: OperationType;
-  execute(input?: IResult): Bluebird<IOperationResult>;
+  config?: PluginConfig;
   halt(): void;
 }
 
-export interface IOperationResult {
-  result: IResult,
+interface OperationResult<T> {
+  result: T,
   delta: number
 }
 
-export interface IOperationFactoryParams {
-  type: OperationType,
-  config: IPluginConfig,
+export interface OperationFactoryParams {
+  config?: PluginConfig,
   log?: ComposerLogger
 }
 
-@ImplementsStaticFactory<OperationResult, IOperationResult>()
-class OperationResult implements IOperationResult {
-  result: IResult;
+@ImplementsStaticFactory<OperationResult<T>, OperationResult<T>>()
+class OperationResult<T> implements OperationResult<T> {
+  result: T;
   delta: number;
-  protected constructor(result: IResult, delta: number) {
-    this.result = result;
+  protected constructor(delta: number, result: T) {
     this.delta = delta;
+    this.result = result;
   }
-  static Factory({
-    result,
-    delta
-  }: IOperationResult): OperationResult {
-    return new OperationResult(result, delta);
+  static Factory<I>({
+    delta,
+    result
+  }: OperationResult<I>): OperationResult<I> {
+    return new OperationResult<I>(delta, result);
   }
 }
 
-class Operation implements Partial<IOperation> {
-  op?: Bluebird<IOperationResult>;
+class Operation<T> implements Partial<Operation<T>> {
+  op?: Bluebird<OperationResult<T>>;
   start: number = Date.now();
   log: ComposerLogger;
-  config: IPluginConfig;
-  type: OperationType;
-  protected constructor(type: OperationType, config: IPluginConfig, log?: ComposerLogger) {
-    this.type = type;
+  config?: PluginConfig;
+  protected constructor(config?: PluginConfig, log?: ComposerLogger) {
     this.config = config;
     this.log = loggerFactory({
       name: 'Operation',
-      type,
       log
     });
   }
@@ -73,10 +67,10 @@ class Operation implements Partial<IOperation> {
   get delta(): number {
     return Date.now() - this.start;
   }
-  protected processHandler(promise: Bluebird<IResult>): Bluebird<IOperationResult> {
-    return promise.then((result: IResult) => {
+  protected processHandler(promise: Bluebird<T>): Bluebird<OperationResult<T>> {
+    return promise.then(result => {
       this.op = undefined;
-      const {delta} = this;
+      const { delta } = this;
       return OperationResult.Factory({
         result,
         delta
@@ -91,56 +85,98 @@ class Operation implements Partial<IOperation> {
   }
 }
 
-@ImplementsStaticFactory<IOOperation, IOperationFactoryParams>()
-export class IOOperation extends Operation implements IOperation {
-  plugin: IIOPlugin;
-  protected constructor(type: OperationType, config: IPluginConfig, log: ComposerLogger) {
-    super(type, config, log);
-    this.plugin = PluginRegistry.getIOPlugin(config.plugin, log);
-  }
-  async execute(input?: IResult): Bluebird<IOperationResult> {
-    if (this.type === OperationType.in) {
-      // @ts-ignore
-      return this.processHandler(this.plugin.read(this.config.options));
-    } else if (this.type === OperationType.out && input) {
-      // @ts-ignore
-      return this.processHandler(this.plugin.write(input, this.config.options));
-    } else {
-      throw new InvalidPluginError(this.config.plugin);
+@ImplementsStaticFactory<ReadOperation, OperationFactoryParams>()
+export class ReadOperation extends Operation<IResult> implements Operation<IResult> {
+  plugin: ReadPlugin;
+  protected constructor(config?: PluginConfig, log?: ComposerLogger) {
+    super(config, log);
+    if (!config) {
+      throw new Error('configuration required');
     }
+    this.plugin = PluginRegistry.getReadPlugin(config.plugin, this.log);
+  }
+  execute(): Bluebird<OperationResult<IResult>> {
+    if (!this.config) {
+      throw new Error('configuration required');
+    }
+    this.log.trace({plugin: this.config}, 'running read operation');
+    return this.processHandler(this.plugin.read(this.config.options));
   }
   static Factory({
-    type,
     config,
     log
-  }: {
-    type: OperationType,
-    config: IPluginConfig,
-    log: ComposerLogger
-  }): IOOperation {
-    return new IOOperation(type, config, log);
+  }: OperationFactoryParams): ReadOperation {
+    return new ReadOperation(config, log);
   }
 }
 
-@ImplementsStaticFactory<TransformOperation, IOperationFactoryParams>()
-export class TransformOperation extends Operation implements IOperation {
-  plugin: ITransformPlugin;
-  protected constructor(type: OperationType, config: IPluginConfig, log: ComposerLogger) {
-    super(type, config, log);
-    this.plugin = PluginRegistry.getTransformPlugin(config.plugin, log);
+@ImplementsStaticFactory<WriteOperation, OperationFactoryParams>()
+export class WriteOperation extends Operation<void> implements Operation<void> {
+  plugin: WritePlugin;
+  protected constructor(config?: PluginConfig, log?: ComposerLogger) {
+    super(config, log);
+    if (!config) {
+      throw new Error('configuration required');
+    }
+    this.plugin = PluginRegistry.getWritePlugin(config.plugin, this.log);
   }
-  async execute(input: IResult): Bluebird<IOperationResult> {
+  execute(input: IResult) {
+    if (!this.config) {
+      throw new Error('configuration required');
+    }
+    this.log.trace({plugin: this.config}, 'running write operation');
+    return this.processHandler(this.plugin.write(input, this.config.options));
+  }
+  static Factory({
+    config,
+    log
+  }: OperationFactoryParams): WriteOperation {
+    return new WriteOperation(config, log);
+  }
+}
+
+@ImplementsStaticFactory<TransformOperation, OperationFactoryParams>()
+export class TransformOperation extends Operation<IResult> implements Operation<IResult> {
+  plugin: TransformPlugin;
+  protected constructor(config?: PluginConfig, log?: ComposerLogger) {
+    super(config, log);
+    if (!config) {
+      throw new Error('configuration required');
+    }
+    this.plugin = PluginRegistry.getTransformPlugin(config.plugin, this.log);
+  }
+  execute(input: IResult) {
+    if (!this.config) {
+      throw new Error('configuration required');
+    }
+    this.log.trace({plugin: this.config}, 'running transform operation');
     return this.processHandler(this.plugin.transform(input, this.config.options));
   }
   static Factory({
-    type,
     config,
     log
+  }: OperationFactoryParams): TransformOperation {
+    return new TransformOperation(config, log);
+  }
+}
+
+@ImplementsStaticFactory<PipelineOperation, OperationFactoryParams>()
+export class PipelineOperation extends Operation<Config> implements Operation<Config> {
+  plugin: PipelinePlugin;
+  protected constructor(plugin: string, log?: ComposerLogger) {
+    super(undefined, log);
+    this.plugin = PluginRegistry.getPipelinePlugin(plugin, this.log);
+  }
+  execute(input: Config) {
+    return this.processHandler(this.plugin.operate(input));
+  }
+  static Factory({
+    plugin,
+    log
   }: {
-    type: OperationType,
-    config: IPluginConfig,
-    log: ComposerLogger
-  }): TransformOperation {
-    return new TransformOperation(type, config, log);
+    plugin: string,
+    log?: ComposerLogger
+  }): PipelineOperation {
+    return new PipelineOperation(plugin, log);
   }
 }
