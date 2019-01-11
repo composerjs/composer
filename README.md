@@ -1,6 +1,6 @@
-[[alt=composer|]]
 <p align="center">
     <img alt="composer" src="https://github.com/composerjs/composer/blob/master/logo.png" width="512">
+    <h1>Composer</h1>
 </p>
 
 <p align="center">
