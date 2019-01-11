@@ -15,7 +15,7 @@
     "ajv": "6.x.x",
     "bluebird": "3.x.x",
     "fs-extra": "7.x.x",
-    "lodash": "4.x.x",
+    "lodash": ">=4.17.5",
     "pino": "5.x.x",
     "pino-pretty": "2.x.x",
     "promise-streams": "2.x.x"
