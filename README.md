@@ -1,6 +1,6 @@
 <p align="center">
     <img alt="composer" src="https://github.com/composerjs/composer/blob/master/logo.png" width="256">
-    <p align="center" style="font-family: sans-serif; font-size: 32px; font-weight: 200;">Composer</p>
+    <h1 align="center" style="font-family: sans-serif; font-size: 32px; font-weight: 200;">Composer</h1>
 </p>
 
 <p align="center" style="font-family: sans-serif; font-size: 16px; font-weight: 500;">
