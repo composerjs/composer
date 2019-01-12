@@ -1,9 +1,9 @@
 <p align="center">
     <img alt="composer" src="https://github.com/composerjs/composer/blob/master/logo.png" width="256">
-    <h1 align="center" style="font-family: sans-serif; font-size: 32px; font-weight: 200;">Composer</h1>
+    <h1 align="center">Composer</h1>
 </p>
 
-<p align="center" style="font-family: sans-serif; font-size: 16px; font-weight: 500;">
+<p align="center">
     Experimental Build and Deployment tool
 </p>
 

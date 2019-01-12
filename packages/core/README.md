@@ -1,7 +1,11 @@
-[[alt=composer|https://github.com/composerjs/composer/blob/master/logo.png]]
-Composer Core
-=============
+<p align="center">
+    <img alt="composer" src="https://github.com/composerjs/composer/blob/master/logo.png" width="256">
+    <h1 align="center">Composer Core</h1>
+</p>
 
-Composer core source, and library
+<p align="center">
+    Composer core source, and library
+</p>
+
 
 SEE:  https://github.com/composerjs/composer/tree/master/packages/cli
