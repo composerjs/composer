@@ -4,7 +4,7 @@ import { Pipeline } from './src/pipeline';
 const CORE_PIPELINE_PLUGINS = [
   '@composerjs/core/lib/plugins/core-alias',
   '@composerjs/core/lib/plugins/alias',
-  '@composerjs/core/lib/plugins/global',
+  '@composerjs/core/lib/plugins/global-plugin-defaults',
   '@composerjs/core/lib/plugins/output-expansion'
 ];
 
@@ -27,7 +27,7 @@ export class Composer {
     this.log = loggerFactory({
       name: 'Composer',
       // For now log everything. This will default to error (or silence) for most clients
-      // the cli will handle setting the log level
+      // @TODO:  configurable setting of the log level
       level: 'trace',
       serializers: {
         config: function({global, pipeline}) {

@@ -1,10 +1,11 @@
 <p align="center">
     <img alt="composer" src="https://github.com/composerjs/composer/blob/master/logo.png" width="256">
-    <h1 align="center">Composer</h1>
+    <h1 align="center">🎼 Composer 🎼</h1>
 </p>
 
 <p align="center">
-    Experimental Build and Deployment tool
+    experiment/prototype build and deployment tool
+    with a simple, and extensible core API.
 </p>
 
 <p align="center">
@@ -81,5 +82,5 @@ TBD
 
 ## Roadmap
 
-**`0.10.0` - prototype**
-*`0.20.0` - experimental preview*
+**`0.10.0` (current)** - prototype
+`0.20.0` - experimental preview

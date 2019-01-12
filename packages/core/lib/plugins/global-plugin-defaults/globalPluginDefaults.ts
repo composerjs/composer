@@ -11,11 +11,11 @@ import {
 import { name } from '../../../package.json'
 
 // noinspection JSUnusedGlobalSymbols
-@ImplementsPluginStaticFactory<GlobalPipelinePlugin>()
-export default class GlobalPipelinePlugin extends CorePipelinePlugin implements PipelinePlugin {
+@ImplementsPluginStaticFactory<GlobalPluginDefaultsPlugin>()
+export default class GlobalPluginDefaultsPlugin extends CorePipelinePlugin implements PipelinePlugin {
   protected constructor(log?: ComposerLogger) {
-    super('GlobalPipelinePlugin', log);
-    PluginRegistry.registerPipelinePlugin(`${name}/lib/plugins/global`, this);
+    super('GlobalPluginDefaultsPlugin', log);
+    PluginRegistry.registerPipelinePlugin(`${name}/lib/plugins/global-plugin-defaults`, this);
   }
   private logAssign(plugin: string, path: string, before: object, after: object) {
     this.log.trace(
@@ -78,7 +78,7 @@ export default class GlobalPipelinePlugin extends CorePipelinePlugin implements 
     });
     return input;
   }
-  static Factory({log}: PluginConstructorParams): GlobalPipelinePlugin {
-    return new GlobalPipelinePlugin(log);
+  static Factory({log}: PluginConstructorParams): GlobalPluginDefaultsPlugin {
+    return new GlobalPluginDefaultsPlugin(log);
   }
 }
