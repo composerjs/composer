@@ -1,2 +1,2 @@
-export * from './utils';
+export * from './promise';
 export * from './errors';

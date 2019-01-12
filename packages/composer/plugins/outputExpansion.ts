@@ -1,4 +1,3 @@
-import Bluebird from 'bluebird';
 import path, { ParsedPath } from 'path';
 import {
   ComposerLogger,
@@ -7,16 +6,17 @@ import {
   ImplementsPluginStaticFactory,
   PipelinePlugin,
   PluginConstructorParams,
-  PluginRegistry
-} from '../../..';
-import { name } from '../../../package.json';
+  PluginRegistry,
+  Bluebird
+} from '@composerjs/core';
+import {CorePipelinePlugins} from '../src/constants';
 
 // noinspection JSUnusedGlobalSymbols
 @ImplementsPluginStaticFactory<OutputExpansionPlugin>()
 export default class OutputExpansionPlugin extends CorePipelinePlugin implements PipelinePlugin {
   protected constructor(log?: ComposerLogger) {
     super('OutputExpansionPlugin', log);
-    PluginRegistry.registerPipelinePlugin(`${name}/lib/plugins/output-expansion`, this);
+    PluginRegistry.registerPipelinePlugin(CorePipelinePlugins.outputExpansion, this);
   }
   private static ParsePathExpression(inPath: ParsedPath, outPath: ParsedPath): string {
     if (outPath.name === '*') {

@@ -8,6 +8,7 @@
     "pino-pretty": "2.x.x",
     "@composerjs/composer": "0.x.x",
     "@composerjs/core": "0.x.x",
+    "@composerjs/plugin-io-fs": "0.x.x",
     "@composerjs/plugin-io-http": "0.x.x",
     "@composerjs/plugin-transform-json5": "0.x.x"
   }

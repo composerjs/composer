@@ -9,8 +9,8 @@ import {
   IResult,
   ResultFactory,
   Bluebird
-} from '../../..';
-import { name } from '../../../package.json';
+} from '@composerjs/core';
+import {name} from './package.json';
 
 interface FSReaderOptions {
   path: string;
@@ -22,11 +22,12 @@ interface FSReaderOptions {
   }
 }
 
+// noinspection JSUnusedGlobalSymbols
 @ImplementsPluginStaticFactory<FSReader>()
-export default class FSReader extends CoreReaderPlugin implements ReadPlugin {
+export class FSReader extends CoreReaderPlugin implements ReadPlugin {
   protected constructor(log?: ComposerLogger) {
     super('CoreReaderPlugin', log);
-    PluginRegistry.registerReadPlugin(`${name}/lib/plugins/fs_read`, this);
+    PluginRegistry.registerReadPlugin(name, this);
   }
   async read({path, readOptions={}}: FSReaderOptions): Bluebird<IResult> {
     this.logStart();

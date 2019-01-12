@@ -2,6 +2,7 @@
 export const config = {
   global: {
     aliases: {
+      '@composerjs/plugin-io-fs': 'fs',
       '@composerjs/plugin-transform-json5': 'json5',
       '@composerjs/plugin-transform-confidence': 'confidence'
     }
@@ -9,7 +10,7 @@ export const config = {
   pipeline: [
     {
       in: {
-        plugin: 'core/fs/read',
+        plugin: 'fs',
         options: {
           path: './build.json5'
         }
@@ -26,9 +27,9 @@ export const config = {
         }
       ],
       out: {
-        plugin: 'core/fs/write',
+        plugin: 'fs',
         options: {
-          path: './out/build.json'
+          path: './out/*.json'
         }
       }
     }

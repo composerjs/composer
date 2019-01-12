@@ -1,0 +1,13 @@
+{
+  "name": "@composerjs/plugin-transform-crypto",
+  "version": "0.10.0",
+  "author": "Justin Beaudry <beaudry.justin@gmail.com>",
+  "license": "MIT",
+  "main": "crypto.ts",
+  "dependencies": {
+    "@composerjs/core": "0.x.x"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

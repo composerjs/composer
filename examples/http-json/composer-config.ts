@@ -2,6 +2,7 @@
 export const config = {
   global: {
     aliases: {
+      '@composerjs/plugin-io-fs': 'fs',
       '@composerjs/plugin-io-http': 'http',
       '@composerjs/plugin-transform-json5': 'json5',
     }
@@ -26,7 +27,7 @@ export const config = {
         }
       ],
       out: {
-        plugin: 'core/fs/write',
+        plugin: 'fs',
         options: {
           path: './out/*.json'
         }

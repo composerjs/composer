@@ -25,61 +25,71 @@ export class PluginLoader {
     const logSuccess = () => {
       log.debug(`plugin ${pluginPath} successfully loaded! initializing plugin.`);
     };
+    let isLoaded = false;
     let plugin;
     try {
       plugin = await import(resolvedPath);
-    } catch (err) {
-      const error = PluginImportError.Factory({pluginPath, err});
-      log.error({error});
-      throw error;
     }
-    if (!plugin) {
-      const err = MissingPluginError.Factory({pluginPath});
-      log.error({err});
-      throw err;
+    catch (err) {
+      throw PluginImportError.Factory({pluginPath, err});
+    }
+    if ( !plugin ) {
+      throw MissingPluginError.Factory({pluginPath});
     }
     logSuccess();
-    if (plugin.reader) {
+    if ( plugin.reader ) {
       log.trace('using plugins "reader" export');
       try {
         plugin.reader.Factory({log});
-      } catch(err) {
+        isLoaded = true;
+      }
+      catch (err) {
         this.handleInstantiationError(err, pluginPath, log);
       }
-    } else if (plugin.writer) {
+    }
+    if ( plugin.writer ) {
       log.trace('using plugins "writer" export');
       try {
         plugin.writer.Factory({log});
-      } catch(err) {
+        isLoaded = true;
+      }
+      catch (err) {
         this.handleInstantiationError(err, pluginPath, log);
       }
-    } else if (plugin.transform) {
+    }
+    if ( plugin.transform ) {
       log.trace('using plugins "transform" export');
       try {
         plugin.transform.Factory({log});
-      } catch(err) {
+        isLoaded = true;
+      }
+      catch (err) {
         this.handleInstantiationError(err, pluginPath, log);
       }
-    } else if (plugin.pipeline) {
+    }
+    if ( plugin.pipeline ) {
       log.trace('using plugins "pipeline" export');
       try {
         plugin.pipeline.Factory({log});
-      } catch(err) {
+        isLoaded = true;
+      }
+      catch (err) {
         this.handleInstantiationError(err, pluginPath, log);
       }
-    } else if (!plugin.default) {
-      const err = MissingPluginDefaultExportError.Factory({pluginPath});
-      log.error({err});
-      throw err;
-    } else {
+    }
+    if ( !isLoaded && !plugin.default ) {
+      throw MissingPluginDefaultExportError.Factory({pluginPath});
+    } else if (!isLoaded) {
       log.trace('using plugins "default" export');
       try {
         plugin.default.Factory({log});
-      } catch(err) {
+      }
+      catch (err) {
         this.handleInstantiationError(err, pluginPath, log);
       }
     }
   }
+
   static async LoadAll(pluginPaths: string[], log: ComposerLogger): Bluebird<void> {
     log.trace(`loading ${pluginPaths.length} plugins`);
     await Bluebird.all(pluginPaths.map(path => PluginLoader.Load(path, log)));

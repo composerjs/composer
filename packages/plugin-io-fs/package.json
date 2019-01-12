@@ -1,20 +1,13 @@
 {
-  "name": "@composerjs/composer",
+  "name": "@composerjs/plugin-io-fs",
   "version": "0.10.0",
   "author": "Justin Beaudry <beaudry.justin@gmail.com>",
   "license": "MIT",
-  "main": "composer.ts",
-  "engines": {
-    "node": "10.x.x"
-  },
-  "os": [
-    "darwin",
-    "linux"
-  ],
+  "main": "index.ts",
   "dependencies": {
+    "@types/fs-extra": "5.x.x",
     "@composerjs/core": "0.x.x",
-    "@types/lodash": "4.14.x",
-    "lodash": "4.17.x"
+    "fs-extra": "7.x.x"
   },
   "publishConfig": {
     "access": "public"

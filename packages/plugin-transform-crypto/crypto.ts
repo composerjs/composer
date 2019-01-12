@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import Bluebird from 'bluebird';
 import {
   ComposerLogger,
   CoreTransformPlugin,
@@ -8,9 +7,10 @@ import {
   PluginConstructorParams,
   PluginRegistry,
   IResult,
-  ResultFactory
-} from '../../..';
-import { name } from '../../../package.json';
+  ResultFactory,
+  Bluebird
+} from '@composerjs/core';
+import { name } from './package.json';
 
 interface CryptoTransformOptions {
   algorithm: string;
@@ -30,7 +30,7 @@ CryptoTransformOptions = {
 export default class CryptoTransformPlugin extends CoreTransformPlugin implements TransformPlugin {
   protected constructor(log?: ComposerLogger) {
     super('CryptoTransformPlugin', log);
-    PluginRegistry.registerTransformPlugin(`${name}/lib/plugins/crypto`, this);
+    PluginRegistry.registerTransformPlugin(name, this);
   }
   async transform(
     input: IResult, {algorithm, encoding, inputEncoding} = CryptoTransformOptions): Bluebird<IResult> {

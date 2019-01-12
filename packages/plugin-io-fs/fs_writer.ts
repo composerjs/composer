@@ -1,4 +1,5 @@
-import fs, { WriteFileOptions } from 'fs-extra';
+// @ts-ignore
+import fs, {WriteFileOptions} from 'fs-extra';
 import {
   IResult,
   ComposerLogger,
@@ -8,19 +9,20 @@ import {
   PluginConstructorParams,
   PluginRegistry,
   Bluebird
-} from '../../..';
-import { name } from '../../../package.json';
+} from '../core';
+import { name } from './package.json';
 
 interface FSWriterOptions {
   path: string;
   writeOptions: WriteFileOptions
 }
 
+// noinspection JSUnusedGlobalSymbols
 @ImplementsPluginStaticFactory<FSWriter>()
-export default class FSWriter extends CoreWriterPlugin implements WritePlugin {
+export class FSWriter extends CoreWriterPlugin implements WritePlugin {
   protected constructor (log?: ComposerLogger) {
     super('CoreWriterPlugin', log);
-    PluginRegistry.registerWritePlugin(`${name}/lib/plugins/fs_write`, this);
+    PluginRegistry.registerWritePlugin(name, this);
   }
   async write(input: IResult, {path, writeOptions}: FSWriterOptions): Bluebird<void> {
     this.logStart();

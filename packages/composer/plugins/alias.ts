@@ -1,4 +1,3 @@
-import Bluebird from 'bluebird';
 import { cloneDeep } from 'lodash';
 import {
   CorePipelinePlugin,
@@ -8,16 +7,17 @@ import {
   Config,
   ImplementsPluginStaticFactory,
   PluginConstructorParams,
-  MissingPluginError
-} from '../../..';
-import { name } from '../../../package.json';
+  MissingPluginError,
+  Bluebird
+} from '@composerjs/core';
+import {CorePipelinePlugins} from '../src/constants';
 
 // noinspection JSUnusedGlobalSymbols
 @ImplementsPluginStaticFactory<AliasPlugin>()
 export default class AliasPlugin extends CorePipelinePlugin implements PipelinePlugin {
   protected constructor(log?: ComposerLogger) {
     super('AliasPlugin', log);
-    PluginRegistry.registerPipelinePlugin(`${name}/lib/plugins/alias`, this);
+    PluginRegistry.registerPipelinePlugin(CorePipelinePlugins.alias, this);
   }
   private static GetAllPluginsFromConfig(config: Config): string[] {
     if (!config.global || !config.global.aliases) {

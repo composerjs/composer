@@ -1,12 +1,8 @@
 import { ComposerLogger, Config, loggerFactory } from '@composerjs/core';
 import { Pipeline } from './src/pipeline';
+import {CorePipelinePlugins} from './src/constants';
 
-const CORE_PIPELINE_PLUGINS = [
-  '@composerjs/core/lib/plugins/core-alias',
-  '@composerjs/core/lib/plugins/alias',
-  '@composerjs/core/lib/plugins/global-plugin-defaults',
-  '@composerjs/core/lib/plugins/output-expansion'
-];
+const CORE_PIPELINE_PLUGINS = Object.values(CorePipelinePlugins);
 
 // noinspection JSUnusedGlobalSymbols
 export class Composer {

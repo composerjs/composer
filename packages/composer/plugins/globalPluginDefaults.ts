@@ -1,4 +1,3 @@
-import Bluebird from 'bluebird';
 import {
   CorePipelinePlugin,
   ComposerLogger,
@@ -6,16 +5,17 @@ import {
   PipelinePlugin,
   Config,
   ImplementsPluginStaticFactory,
-  PluginConstructorParams
-} from '../../..';
-import { name } from '../../../package.json'
+  PluginConstructorParams,
+  Bluebird
+} from '@composerjs/core';
+import {CorePipelinePlugins} from '../src/constants';
 
 // noinspection JSUnusedGlobalSymbols
 @ImplementsPluginStaticFactory<GlobalPluginDefaultsPlugin>()
 export default class GlobalPluginDefaultsPlugin extends CorePipelinePlugin implements PipelinePlugin {
   protected constructor(log?: ComposerLogger) {
     super('GlobalPluginDefaultsPlugin', log);
-    PluginRegistry.registerPipelinePlugin(`${name}/lib/plugins/global-plugin-defaults`, this);
+    PluginRegistry.registerPipelinePlugin(CorePipelinePlugins.globalPluginDefaults, this);
   }
   private logAssign(plugin: string, path: string, before: object, after: object) {
     this.log.trace(
