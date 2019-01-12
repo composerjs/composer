@@ -8,4 +8,6 @@
 </p>
 
 
-SEE:  https://github.com/composerjs/composer/tree/master/packages/cli
+<p align="center">
+    SEE:  https://github.com/composerjs/composer/tree/master/packages/cli
+</p>
